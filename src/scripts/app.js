@@ -8,6 +8,8 @@ const app = function() {
 		return d.getFullYear()
 	}
 
+	var counter = 1000
+
 	const TimeMachine = React.createClass({
 		getInitialState: function(){
 			return {
@@ -17,21 +19,34 @@ const app = function() {
 		},
 
 		_increaseYear: function (){
-				this.state.activeButton = "forward"
-				this.state.year += 1
-				this.setState({
-					year: this.state.year,
-					activeButton: this.state.activeButton
-				})
+				// this.state.activeButton = "forward"
+				if(this.state.activeButton === 'forward'){
+					this.state.year += 1
+					this.setState({
+						year: this.state.year,
+						// activeButton: this.state.activeButton
+					})
+					counter *= 0.9
+					// console.log(counter)
+					this.future = setTimeout(this._increaseYear,counter)
+						
+				}
+				
 		},
 
 		_decreaseYear: function (){
-			this.state.activeButton = "backward"
-			this.state.year -= 1
-			this.setState({
-				year: this.state.year,
-				activeButton: this.state.activeButton
-			})
+			if (this.state.activeButton === 'backward') {
+				// this.state.activeButton = "backward"
+				this.state.year -= 1
+				this.setState({
+					year: this.state.year,
+					// activeButton: this.state.activeButton
+				})
+				counter *= 0.9
+				// console.log(counter)
+				this.past = setTimeout(this._decreaseYear,counter)
+			}
+			
 		},
 
 		_stop: function(){
@@ -39,16 +54,24 @@ const app = function() {
 			this.setState({
 				activeButton: this.state.activeButton
 			})
-			clearInterval(this.future)
-			clearInterval(this.past)
+			// clearInterval(this.future)
+			// clearTimeOut(this.past)
 		},
 
 		_backward: function(){
-			this.future = setInterval(this._decreaseYear,1000)
+			this.state.activeButton = "backward"
+			this.setState({
+				activeButton: this.state.activeButton
+				})
+			this._decreaseYear()
 		}, 
 
 		_forward: function(){
-			this.future = setInterval(this._increaseYear,1000)
+			this.state.activeButton = "forward"
+			this.setState({
+				activeButton: this.state.activeButton
+				})
+			this._increaseYear()
 		},
 
 		render: function(){
